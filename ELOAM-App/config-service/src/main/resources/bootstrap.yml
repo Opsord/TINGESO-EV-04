@@ -1,0 +1,12 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: config-service
+  cloud:
+    config:
+      server:
+        git:
+          default-label: main
+          uri: https://github.com/Opsord/TINGESO-EV-04
+          search-paths: "ELOAM-App/config-data"
