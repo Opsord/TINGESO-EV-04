@@ -17,6 +17,6 @@ spring:
             allow-credentials: true
       routes:
         - id: teacher-service
-          uri: lb://teacher-service
+          uri: https//localhost:8082
           predicates:
             - Path=/teachers/**
