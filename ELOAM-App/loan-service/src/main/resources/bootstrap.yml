@@ -1,7 +1,4 @@
 spring:
-  devtools:
-    restart:
-      aditional-paths: src/main/java
   cloud:
     config:
       enabled: true
@@ -14,9 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    plataform: postgres
     driver-class-name: org.postgresql.Driver
-    dbname: ELOAM-loan
-    url: jdbc:postgresql://$localhost:5432/ELOAM-loan?autorReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:postgresql://localhost:5432/ELOAM-loan?autorReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
     username: postgres
     password: 1502
