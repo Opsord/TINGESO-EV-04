@@ -92,4 +92,30 @@ public class LoanController {
             return ResponseEntity.ok().build();
         }
     }
+
+    // Update loan duration
+    @GetMapping("/update/{loanID}")
+    public ResponseEntity<Void> updateLoanDuration(@PathVariable Long loanID) {
+        if (loanService.findLoanByID(loanID) == null) {
+            logger.info("Loan not found");
+            return ResponseEntity.notFound().build();
+        } else {
+            logger.info("Updating loan duration of loan with ID: " + loanID);
+            loanService.updateLoanDuration(loanID);
+            return ResponseEntity.ok().build();
+        }
+    }
+
+    // Mark a loan as returned
+    @GetMapping("/mark-returned/{loanID}")
+    public ResponseEntity<Void> markLoanAsReturned(@PathVariable Long loanID) {
+        if (loanService.findLoanByID(loanID) == null) {
+            logger.info("Loan not found");
+            return ResponseEntity.notFound().build();
+        } else {
+            logger.info("Marking loan with ID: " + loanID + " as returned");
+            loanService.markLoanAsReturned(loanID);
+            return ResponseEntity.ok().build();
+        }
+    }
 }

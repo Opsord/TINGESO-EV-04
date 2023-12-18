@@ -20,7 +20,7 @@ public class ManagementService {
     Logger logger = Logger.getLogger(getClass().getName());
 
     // Communication with teacher service
-    private final String teacherServiceURL = "http://localhost:8080/teachers";
+    private static final String teacherServiceURL = "http://localhost:8082/teachers";
 
     // Get a teacher by its RUT
     public TeacherModel findByRut(String rut) {
@@ -33,4 +33,36 @@ public class ManagementService {
         );
         return response.getBody();
     }
+
+    // Get all teachers
+    public List<TeacherModel> findAllTeachers() {
+        ResponseEntity<List<TeacherModel>> response = restTemplate.exchange(
+                teacherServiceURL,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<TeacherModel>>() {
+                }
+        );
+        return response.getBody();
+    }
+
+    // Change the loan restriction status of a teacher
+    public void changeLoanRestrictionStatus(String teacherRUT, int teacherLoanRestriction) {
+        // Find the teacher by its RUT
+        TeacherModel teacherModel = findByRut(teacherRUT);
+        // Change the loan restriction status
+        teacherModel.setTeacherLoanRestriction(teacherLoanRestriction);
+        // Save the changes to the database
+        restTemplate.put(teacherServiceURL + "/" + teacherRUT, teacherModel);
+    }
+
+
+
+
+
+
+
+
+
+
 }

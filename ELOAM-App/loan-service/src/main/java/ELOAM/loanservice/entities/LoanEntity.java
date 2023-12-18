@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,6 +29,8 @@ public class LoanEntity {
     private LocalDateTime loanDate;
 
     private LocalDateTime loanReturnDate;
+
+    private Duration loanDuration;
 
     // Int that indicates if the loan has an observation
     // 0 = No observation | 1 = Returned with delay | 2 = Equipment damaged

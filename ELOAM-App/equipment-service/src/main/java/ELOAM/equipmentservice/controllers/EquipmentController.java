@@ -37,7 +37,7 @@ public class EquipmentController {
     @GetMapping("/{equipmentID}")
     public ResponseEntity<EquipmentEntity> getEquipmentByID(@PathVariable Long equipmentID) {
         if (equipmentService.findEquipmentByID(equipmentID) == null) {
-            logger.info("Equipment not found");
+            logger.info("Equipment with ID: " + equipmentID + " not found");
             return ResponseEntity.notFound().build();
         } else {
             logger.info("Equipment found with ID: " + equipmentID);
