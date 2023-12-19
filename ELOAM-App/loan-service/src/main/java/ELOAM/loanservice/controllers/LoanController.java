@@ -69,15 +69,15 @@ public class LoanController {
         }
     }
 
-    // Get a list of loans by the loan observation
-    @GetMapping("/observation/{loanObservation}")
-    public ResponseEntity<List<LoanEntity>> getLoansByLoanObservation(@PathVariable int loanObservation) {
-        if (loanService.findLoansByLoanObservation(loanObservation).isEmpty()) {
-            logger.info("No loans found with loan observation: " + loanObservation);
+    // Get a list of loans by observation and RUT
+    @GetMapping("/observation-rut/{loanObservation}/{responsibleTeacherRUT}")
+    public ResponseEntity<List<LoanEntity>> getLoansByObservationAndRUT(@PathVariable int loanObservation, @PathVariable String responsibleTeacherRUT) {
+        if (loanService.findLoansByObservationAndRUT(loanObservation, responsibleTeacherRUT).isEmpty()) {
+            logger.info("No loans found with observation: " + loanObservation + " and teacher RUT: " + responsibleTeacherRUT);
             return ResponseEntity.noContent().build();
         } else {
-            logger.info("Some loans found with loan observation: " + loanObservation);
-            return ResponseEntity.ok(loanService.findLoansByLoanObservation(loanObservation));
+            logger.info("Some loans found with observation: " + loanObservation + " and teacher RUT: " + responsibleTeacherRUT);
+            return ResponseEntity.ok(loanService.findLoansByObservationAndRUT(loanObservation, responsibleTeacherRUT));
         }
     }
 

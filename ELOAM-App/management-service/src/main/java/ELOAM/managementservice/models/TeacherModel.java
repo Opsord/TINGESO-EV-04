@@ -17,4 +17,7 @@ public class TeacherModel {
 
         // Int that indicates if the teacher has a loan restriction
         private int teacherLoanRestriction;
+
+        // LocalDate that indicates the end of the temporary restriction
+        private String teacherLoanRestrictionDate;
 }

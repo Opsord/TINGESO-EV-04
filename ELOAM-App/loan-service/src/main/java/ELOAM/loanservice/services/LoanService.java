@@ -40,9 +40,9 @@ public class LoanService {
         return loanRepository.findLoansByTeacherRUT(responsibleTeacherRUT);
     }
 
-    // Find loans by the loan observation
-    public List<LoanEntity> findLoansByLoanObservation(int loanObservation) {
-        return loanRepository.findLoansByLoanObservation(loanObservation);
+    // Find loans by observation and RUT
+    public List<LoanEntity> findLoansByObservationAndRUT(int loanObservation, String responsibleTeacherRUT) {
+        return loanRepository.findLoansByObservationAndRUT(loanObservation, responsibleTeacherRUT);
     }
 
     // Delete a loan from the database

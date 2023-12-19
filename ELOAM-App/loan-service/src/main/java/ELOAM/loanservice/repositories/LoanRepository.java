@@ -27,4 +27,9 @@ public interface LoanRepository extends CrudRepository<LoanEntity, Long> {
     // Find loans by the loan observation
     @Query("SELECT l FROM LoanEntity l WHERE l.loanObservation = ?1")
     List<LoanEntity> findLoansByLoanObservation(@Param("loanObservation") int loanObservation);
+
+    // Find loans by observation and RUT
+    @Query("SELECT l FROM LoanEntity l WHERE l.loanObservation = ?1 AND l.responsibleTeacherRUT = ?2")
+    List<LoanEntity> findLoansByObservationAndRUT
+    (@Param("loanObservation") int loanObservation, @Param("responsibleTeacherRUT") String responsibleTeacherRUT);
 }

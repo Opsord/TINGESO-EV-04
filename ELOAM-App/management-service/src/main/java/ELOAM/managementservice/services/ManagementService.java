@@ -9,6 +9,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -36,30 +38,8 @@ public class ManagementService {
         return response.getBody();
     }
 
-    // Get all teachers
-    public List<TeacherModel> findAllTeachers() {
-        ResponseEntity<List<TeacherModel>> response = restTemplate.exchange(
-                teacherServiceURL,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TeacherModel>>() {
-                }
-        );
-        return response.getBody();
-    }
-
-    // Change the loan restriction status of a teacher
-    public void changeLoanRestrictionStatus(String teacherRUT, int teacherLoanRestriction) {
-        // Find the teacher by its RUT
-        TeacherModel teacherModel = findByRut(teacherRUT);
-        // Change the loan restriction status
-        teacherModel.setTeacherLoanRestriction(teacherLoanRestriction);
-        // Save the changes to the database
-        restTemplate.put(teacherServiceURL + "/" + teacherRUT, teacherModel);
-    }
-
     // Update a teacher
-    public TeacherModel updateTeacher(TeacherModel teacherModel) {
+    public void updateTeacher(TeacherModel teacherModel) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<TeacherModel> request = new HttpEntity<>(teacherModel, headers);
@@ -70,7 +50,7 @@ public class ManagementService {
                 new ParameterizedTypeReference<TeacherModel>() {
                 }
         );
-        return response.getBody();
+        response.getBody();
     }
 
     // Communication with equipment service
@@ -128,10 +108,10 @@ public class ManagementService {
         return response.getBody();
     }
 
-    // Get all loans
-    public List<LoanModel> findAllLoans() {
+    // Get loans by observation and teacher RUT
+    public List<LoanModel> findLoansByObservationAndRUT(int loanObservation, String teacherRUT) {
         ResponseEntity<List<LoanModel>> response = restTemplate.exchange(
-                loanServiceURL,
+                loanServiceURL + "/observation-rut/" + loanObservation + "/" + teacherRUT,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<LoanModel>>() {
@@ -139,6 +119,7 @@ public class ManagementService {
         );
         return response.getBody();
     }
+
 
 
     // Other methods
@@ -191,6 +172,24 @@ public class ManagementService {
         return teacher;
     }
 
+    // Calculate restriction end date
+    public LocalDate calculateEndDateOfRestriction(List<LoanModel> loanList) {
+        // Find the last loan with observation 1
+        LoanModel lastLateLoan = loanList.stream()
+                .filter(loan -> loan.getLoanObservation() == 1)
+                .max(Comparator.comparing(LoanModel::getLoanDate))
+                .orElse(null);
+
+        // Handle the case where there are no loans with observation 1
+        if (lastLateLoan == null) {
+            // There should not
+            return null;
+        }
+
+        // Calculate the end date of restriction
+        return lastLateLoan.getLoanDate().toLocalDate().plusDays(7);
+    }
+
     // Check if a teacher should have a loan restriction
     // 0 = No observation | 1 = Returned with delay | 2 = Equipment damaged
     public void updateTeacherLoanRestrictionStatus(String teacherRUT) {
@@ -209,6 +208,10 @@ public class ManagementService {
             teacher = checkTemporalRestriction(teacher, loanList);
             // If the teacher has a temporal loan restriction, update the teacher
             if (teacher.getTeacherLoanRestriction() == 1) {
+                // Calculate the end date of restriction
+                LocalDate endDateOfRestriction = calculateEndDateOfRestriction(loanList);
+                // Set the end date of restriction
+                teacher.setTeacherLoanRestrictionDate(String.valueOf(endDateOfRestriction));
                 updateTeacher(teacher);
             }
         }
