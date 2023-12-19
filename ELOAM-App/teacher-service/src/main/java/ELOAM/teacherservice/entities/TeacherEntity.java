@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "teachers")
 @NoArgsConstructor
@@ -22,5 +24,9 @@ public class TeacherEntity {
     private String teacherLastName;
 
     // Int that indicates if the teacher has a loan restriction
+    // 0 = No restriction | 1 = Permanent restriction | 2 = Temporary restricted
     private int teacherLoanRestriction;
+
+    // LocalDateTime that indicates the end of the temporary restriction
+    private LocalDate teacherLoanRestrictionDate;
 }

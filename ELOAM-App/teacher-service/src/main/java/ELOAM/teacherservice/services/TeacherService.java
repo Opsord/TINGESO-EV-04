@@ -5,6 +5,8 @@ import ELOAM.teacherservice.repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,16 +38,28 @@ public class TeacherService {
     // Change the loan restriction status of a teacher
     public void changeLoanRestrictionStatus(String teacherRUT, int teacherLoanRestriction) {
         // Find the teacher by its RUT
-        TeacherEntity teacherEntity = teacherRepository.findTeacherByRUT(teacherRUT);
+        TeacherEntity teacherEntity = findTeacherByRUT(teacherRUT);
         // Change the loan restriction status
         teacherEntity.setTeacherLoanRestriction(teacherLoanRestriction);
         // Save the changes to the database
-        teacherRepository.save(teacherEntity);
+        saveTeacher(teacherEntity);
     }
 
     // Delete a teacher from the database
     public void deleteTeacher(String teacherRUT) {
         teacherRepository.deleteById(teacherRUT);
+    }
+
+    // Set an end date of restriction to a teacher
+    public void setEndDateOfRestriction(String teacherRUT, String endDateOfRestriction) {
+        // Find the teacher by its RUT
+        TeacherEntity teacherEntity = findTeacherByRUT(teacherRUT);
+        // Format the end date of restriction from String to LocalDate
+        LocalDate endDate = LocalDate.parse(endDateOfRestriction);
+        // Set the end date of restriction
+        teacherEntity.setTeacherLoanRestrictionDate(endDate);
+        // Save the changes to the database
+        saveTeacher(teacherEntity);
     }
 
 }

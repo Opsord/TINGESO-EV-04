@@ -58,6 +58,7 @@ public class LoanController {
     }
 
     // Get a list of loans by the teacher RUT
+    @GetMapping("/teacher/{responsibleTeacherRUT}")
     public ResponseEntity<List<LoanEntity>> getLoansByTeacherRUT(@PathVariable String responsibleTeacherRUT) {
         if (loanService.findLoansByTeacherRUT(responsibleTeacherRUT).isEmpty()) {
             logger.info("No loans found with teacher RUT: " + responsibleTeacherRUT);

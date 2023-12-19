@@ -4,10 +4,7 @@ import ELOAM.teacherservice.entities.TeacherEntity;
 import ELOAM.teacherservice.services.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -57,6 +54,19 @@ public class TeacherController {
         }
     }
 
+    // Set an end date of restriction to a teacher
+    @GetMapping("/end-date/{teacherRUT}/{endDateOfRestriction}")
+    public ResponseEntity<Void> setEndDateOfRestriction(@PathVariable String teacherRUT, @PathVariable String endDateOfRestriction) {
+        if (teacherService.findTeacherByRUT(teacherRUT) == null) {
+            logger.info("Teacher not found");
+            return ResponseEntity.notFound().build();
+        } else {
+            logger.info("Setting end date of restriction to teacher with RUT: " + teacherRUT);
+            teacherService.setEndDateOfRestriction(teacherRUT, endDateOfRestriction);
+            return ResponseEntity.ok().build();
+        }
+    }
+
     // Change the loan restriction status of a teacher
     @GetMapping("/change-restriction/{teacherRUT}/{teacherLoanRestriction}")
     public ResponseEntity<Void> changeLoanRestrictionStatus(@PathVariable String teacherRUT, @PathVariable int teacherLoanRestriction) {
@@ -81,6 +91,14 @@ public class TeacherController {
             teacherService.deleteTeacher(teacherRUT);
             return ResponseEntity.ok().build();
         }
+    }
+
+    // Save a teacher to the database
+    @PostMapping
+    public ResponseEntity<TeacherEntity> saveTeacher(@RequestBody TeacherEntity teacherEntity) {
+        logger.info("Saving teacher with RUT: " + teacherEntity.getTeacherRUT());
+        teacherService.saveTeacher(teacherEntity);
+        return ResponseEntity.ok(teacherEntity);
     }
 
 }
