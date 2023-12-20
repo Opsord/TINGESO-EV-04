@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.logging.Logger;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {
@@ -55,7 +56,7 @@ public class TeacherController {
     }
 
     // Set an end date of restriction to a teacher
-    @GetMapping("/end-date/{teacherRUT}/{endDateOfRestriction}")
+    @PutMapping("/end-date/{teacherRUT}/{endDateOfRestriction}")
     public ResponseEntity<Void> setEndDateOfRestriction(@PathVariable String teacherRUT, @PathVariable String endDateOfRestriction) {
         if (teacherService.findTeacherByRUT(teacherRUT) == null) {
             logger.info("Teacher not found");
@@ -68,7 +69,7 @@ public class TeacherController {
     }
 
     // Change the loan restriction status of a teacher
-    @GetMapping("/change-restriction/{teacherRUT}/{teacherLoanRestriction}")
+    @PutMapping("/change-restriction/{teacherRUT}/{teacherLoanRestriction}")
     public ResponseEntity<Void> changeLoanRestrictionStatus(@PathVariable String teacherRUT, @PathVariable int teacherLoanRestriction) {
         if (teacherService.findTeacherByRUT(teacherRUT) == null) {
             logger.info("Teacher not found");

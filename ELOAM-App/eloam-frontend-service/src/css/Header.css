@@ -1,0 +1,15 @@
+.Header{
+    background-color: #ffc107;
+      
+}
+
+.Header01Content{
+    font-weight: bold;
+    align-items: flex-start;
+    margin-left: -1px;
+}
+
+.Logo01{
+    width: 50px;
+    height:50px;
+}

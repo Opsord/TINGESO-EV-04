@@ -28,5 +28,5 @@ public class TeacherEntity {
     private int teacherLoanRestriction;
 
     // LocalDateTime that indicates the end of the temporary restriction
-    private LocalDate teacherLoanRestrictionDate;
+        private LocalDate teacherLoanRestrictionDate;
 }

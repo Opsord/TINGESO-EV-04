@@ -4,14 +4,12 @@ import ELOAM.equipmentservice.entities.EquipmentEntity;
 import ELOAM.equipmentservice.services.EquipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.logging.Logger;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/equipment")
 public class EquipmentController {
@@ -70,7 +68,7 @@ public class EquipmentController {
     }
 
     // Change the availability status of equipment
-    @GetMapping("/change-availability/{equipmentID}/{equipmentAvailability}")
+    @PutMapping("/change-availability/{equipmentID}/{equipmentAvailability}")
     public ResponseEntity<Void> changeAvailabilityStatus(@PathVariable Long equipmentID, @PathVariable Boolean equipmentAvailability) {
         if (equipmentService.findEquipmentByID(equipmentID) == null) {
             logger.info("Equipment not found");
@@ -93,5 +91,13 @@ public class EquipmentController {
             equipmentService.deleteEquipment(equipmentID);
             return ResponseEntity.ok().build();
         }
+    }
+
+    // Save equipment to the database
+    @PostMapping
+    public ResponseEntity<Void> saveEquipment(@RequestBody EquipmentEntity equipmentEntity) {
+        logger.info("Saving equipment");
+        equipmentService.saveEquipment(equipmentEntity);
+        return ResponseEntity.ok().build();
     }
 }

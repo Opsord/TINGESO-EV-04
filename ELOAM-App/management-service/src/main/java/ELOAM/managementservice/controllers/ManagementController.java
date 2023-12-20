@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -21,4 +20,12 @@ public class ManagementController {
 
     Logger logger = Logger.getLogger(getClass().getName());
 
+    // Update a teacher restriction status
+    @GetMapping("/update-restriction/{teacherRUT}")
+    public ResponseEntity<Void> updateTeacherLoanRestriction(@PathVariable String teacherRUT) {
+        // Assuming that the teacher exists
+        managementService.updateTeacherLoanRestrictionStatus(teacherRUT);
+        logger.info("Teacher with RUT: " + teacherRUT + " has been updated");
+        return ResponseEntity.ok().build();
+    }
 }

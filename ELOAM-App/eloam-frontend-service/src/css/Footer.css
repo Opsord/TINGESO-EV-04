@@ -1,0 +1,21 @@
+.Footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .TextFooter {
+    font-weight: bold;
+    margin-left: -1px;
+    text-align: center;
+    background-color: #ffc107;
+  }
+  
+  .CopyRight {
+    font-size: 12px;
+    color: #000000;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  

@@ -1,0 +1,17 @@
+.CardGlobal {
+    background-color: #fff;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 20px;
+    position: relative;
+    width: 100%;
+  }
+
+  .CardBody {
+    height: 13rem;
+  }
+
+  .CardFooter {
+    height: 15%;
+  }
+  
