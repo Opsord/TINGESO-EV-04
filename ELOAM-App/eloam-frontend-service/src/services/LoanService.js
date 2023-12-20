@@ -44,6 +44,11 @@ class LoanService {
   markLoanAsReturned(loanCode) {
     return axios.get(LOAN_API_URL + "/mark-returned/" + loanCode);
   }
+
+  // Create a new loan
+  createLoan(loan) {
+    return axios.post(LOAN_API_URL + "/create", loan);
+  }
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

@@ -117,4 +117,20 @@ public class LoanController {
             return ResponseEntity.ok().build();
         }
     }
+
+    // Save a loan to the database
+    @PostMapping
+    public ResponseEntity<LoanEntity> saveLoan(@RequestBody LoanEntity loanEntity) {
+        logger.info("Saving loan");
+        loanService.saveLoan(loanEntity);
+        return ResponseEntity.ok(loanEntity);
+    }
+
+    // Create a loan
+    @PostMapping("/create")
+    public ResponseEntity<LoanEntity> createLoan(@RequestBody LoanEntity loanEntity) {
+        logger.info("Creating loan");
+        loanService.createLoan(loanEntity);
+        return ResponseEntity.ok(loanEntity);
+    }
 }

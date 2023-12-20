@@ -1,8 +1,6 @@
 package ELOAM.loanservice.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +16,15 @@ import java.time.LocalDateTime;
 public class LoanEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
     private Long loanID;
 
     private String responsibleTeacherRUT;
 
     private Long equipmentID;
+
+    private String equipmentBrand;
 
     private String loanMotivation;
 

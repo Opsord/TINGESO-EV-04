@@ -68,14 +68,14 @@ public class EquipmentController {
     }
 
     // Change the availability status of equipment
-    @PutMapping("/change-availability/{equipmentID}/{equipmentAvailability}")
-    public ResponseEntity<Void> changeAvailabilityStatus(@PathVariable Long equipmentID, @PathVariable Boolean equipmentAvailability) {
+    @GetMapping("/change-availability/{equipmentID}")
+    public ResponseEntity<Void> changeAvailabilityStatus(@PathVariable Long equipmentID) {
         if (equipmentService.findEquipmentByID(equipmentID) == null) {
             logger.info("Equipment not found");
             return ResponseEntity.notFound().build();
         } else {
             logger.info("Changing availability status of equipment with ID: " + equipmentID);
-            equipmentService.changeAvailabilityStatus(equipmentID, equipmentAvailability);
+            equipmentService.changeAvailabilityStatus(equipmentID);
             return ResponseEntity.ok().build();
         }
     }

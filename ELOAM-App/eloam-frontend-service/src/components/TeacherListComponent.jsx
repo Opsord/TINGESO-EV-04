@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
+import swal from "sweetalert";
 // import { useNavigate } from "react-router-dom";
 import TeacherService from "../services/TeacherService";
+import ManagementService from "../services/ManagementService";
 import HeaderComponent from "./HeaderComponent";
 import "../css/HomeComponent.css";
 
@@ -63,6 +65,39 @@ export default function TeacherListFunComponent() {
         teacherList: filteredTeachers,
       }));
     }
+  };
+
+  const handleUpdateRestriction = (teacherRUT) => {
+    swal({
+      title: "¿Está seguro de que desea actualizar la restricción del profesor?",
+      icon: "warning",
+      buttons: ["Cancelar", "Actualizar restricción"],
+      dangerMode: true,
+    }).then((confirmed) => {
+      if (confirmed) {
+        ManagementService.updateTeacherRestrictionStatus(teacherRUT)
+          .then(() => {
+            swal("Restricción del profesor actualizada", {
+              icon: "success",
+              timer: "3000",
+            });
+
+            TeacherService.getAllTeachers()
+              .then((res) => {
+                setInput((prevInput) => ({ ...prevInput, teacherList: res.data }));
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+            swal("Error al actualizar la restricción del profesor", {
+              icon: "error",
+            });
+          });
+      }
+    });
   };
 
   // Calculate indexes for pagination
@@ -174,9 +209,10 @@ export default function TeacherListFunComponent() {
                     <td> {teacher.teacherLoanRestriction} </td>
                     <td> {teacher.teacherLoanRestrictionDate} </td>
                     <td>
-                      <button
-                        className="input-plan-boton">
-                        Detalles
+                    <button
+                        className="input-plan-boton"
+                        onClick={() => handleUpdateRestriction(teacher.teacherRUT)}>
+                        Actualizar restricción
                       </button>
                     </td>
                   </tr>

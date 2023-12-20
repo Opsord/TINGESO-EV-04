@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+import { format, formatDuration, intervalToDuration } from "date-fns";
 // import { useNavigate } from "react-router-dom";
 import LoanService from "../services/LoanService";
+import EquipmentService from "../services/EquipmentService";
 import HeaderComponent from "./HeaderComponent";
 import "../css/HomeComponent.css";
 
-export default function TeacherListFunComponent() {
+export default function LoanListComponent() {
   const initialState = {
     loanID: "",
     loanList: [],
   };
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [input, setInput] = useState(initialState);
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,12 +26,62 @@ export default function TeacherListFunComponent() {
   useEffect(() => {
     LoanService.getAllLoans()
       .then((res) => {
-        setInput((prevInput) => ({ ...prevInput, loanList: res.data }));
+        // Ordenar la lista por fecha de préstamo en orden descendente
+        const sortedLoans = res.data.sort(
+          (a, b) => new Date(b.loanDate) - new Date(a.loanDate)
+        );
+        setInput((prevInput) => ({ ...prevInput, loanList: sortedLoans }));
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
+  const handleMarkAsReturned = (loanID, equipmentID) => {
+    swal({
+      title: "¿Está seguro de que desea marcar este préstamo como devuelto?",
+      icon: "warning",
+      buttons: ["Cancelar", "Marcar como devuelto"],
+      dangerMode: true,
+    }).then((confirmed) => {
+      if (confirmed) {
+        LoanService.markLoanAsReturned(loanID)
+          .then(() => {
+            swal("Préstamo marcado como devuelto", {
+              icon: "success",
+              timer: "3000",
+            });
+
+            EquipmentService.changeEquipmentAvailability(equipmentID)
+              .then(() => {
+                // Lógica adicional después de marcar el equipo como disponible
+                console.log("Equipo marcado como disponible");
+              })
+              .catch((error) => {
+                console.log(error);
+                swal("Error al marcar el equipo como disponible", {
+                  icon: "error",
+                });
+              });
+
+            // Recargar la lista después de marcar como devuelto
+            LoanService.getAllLoans()
+              .then((res) => {
+                setInput((prevInput) => ({ ...prevInput, loanList: res.data }));
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+            swal("Error al marcar como devuelto", {
+              icon: "error",
+            });
+          });
+      }
+    });
+  };
 
   // Handle search input
   const handleSearch = (e) => {
@@ -37,7 +91,7 @@ export default function TeacherListFunComponent() {
 
     if (query.trim() === "") {
       // If the search query is empty, reset the table to its original state
-      LoanService.getAllLoans
+      LoanService.getAllLoans()
         .then((res) => {
           setInput((prevInput) => ({ ...prevInput, loanList: res.data }));
         })
@@ -47,17 +101,15 @@ export default function TeacherListFunComponent() {
     } else {
       // If there's a search query, filter the table based on the query
       const filteredLoans = input.loanList.filter((loan) => {
-        // Serach by Teacher RUT, Name and Last Name and equipment brand
-        const lowerCaseRUT = loan.teacherRUT.toLowerCase();
-        const lowerCaseName = loan.teacherName.toLowerCase();
-        const lowerCaseLastName = loan.teacherLastName.toLowerCase();
-        const lowerCaseBrand = loan.equipmentBrand.toLowerCase();
+        // Serach by Teacher RUT, Equipment ID, and Loan Motivation
+        const lowerCaseRUT = loan.responsibleTeacherRUT.toLowerCase();
+        const lowerCaseID = String(loan.equipmentID).toLowerCase();
+        const lowerCaseMotivation = loan.loanMotivation.toLowerCase();
 
         return (
           lowerCaseRUT.includes(query.toLowerCase()) ||
-          lowerCaseName.includes(query.toLowerCase()) ||
-          lowerCaseLastName.includes(query.toLowerCase()) ||
-          lowerCaseBrand.includes(query.toLowerCase())
+          lowerCaseID.includes(query.toLowerCase()) ||
+          lowerCaseMotivation.includes(query.toLowerCase())
         );
       });
 
@@ -148,14 +200,30 @@ export default function TeacherListFunComponent() {
 
       <div className="PageBody">
         <div className="TableContainer">
-          <h1>Listado de prestamos</h1>
-          <input
-            className="search-bar"
-            type="text"
-            placeholder="Buscar..."
-            value={searchQuery}
-            onChange={handleSearch}
-          />
+          <div className="Table-Top">
+            <h1>Listado de prestamos</h1>
+
+            <div className="search-and-button-container">
+              <div className="search-bar-container">
+                <input
+                  className="search-bar"
+                  type="text"
+                  placeholder="Buscar..."
+                  value={searchQuery}
+                  onChange={handleSearch}
+                />
+              </div>
+              <div className="button-container">
+                <button
+                  className="create-button"
+                  onClick={() => {
+                    navigate("/loans/create");
+                  }}>
+                  Nuevo préstamo
+                </button>
+              </div>
+            </div>
+          </div>
           <Table className="content-table" data-search="true">
             <thead>
               <tr>
@@ -176,15 +244,35 @@ export default function TeacherListFunComponent() {
                     <td> {loan.responsibleTeacherRUT}</td>
                     <td> {loan.equipmentID} </td>
                     <td> {loan.loanMotivation} </td>
-                    <td> {loan.loanDate} </td>
-                    <td> {loan.loanReturnDate} </td>
-                    <td> {loan.loanDuration} </td>
+                    <td>
+                      {" "}
+                      {format(new Date(loan.loanDate), "dd/MM/yyyy HH:mm:ss")}
+                    </td>
+                    <td>
+                      {" "}
+                      {format(
+                        new Date(loan.loanReturnDate),
+                        "dd/MM/yyyy HH:mm:ss"
+                      )}
+                    </td>
+                    <td>
+                      {" "}
+                      {formatDuration(
+                        intervalToDuration({
+                          start: new Date(loan.loanDate),
+                          end: new Date(loan.loanReturnDate),
+                        })
+                      )}{" "}
+                    </td>
                     <td> {loan.loanObservation} </td>
                     <td>
-                      <button
-                        className="input-plan-boton">
-                        Detalles
-                      </button>
+                      {!loan.loanReturnDate && (
+                        <button
+                          className="input-plan-boton"
+                          onClick={() => handleMarkAsReturned(loan.loanID)}>
+                          Marcar retorno
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -200,7 +288,6 @@ export default function TeacherListFunComponent() {
             <ul className="pagination">{renderPageNumbers()}</ul>
           </nav>
         </div>
-
       </div>
     </div>
   );

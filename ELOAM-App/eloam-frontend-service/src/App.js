@@ -5,6 +5,7 @@ import HomeComponent from "./components/HomeComponent";
 import TeacherComponent from "./components/TeacherListComponent";
 import EquipmentComponent from "./components/EquipmentListComponent";
 import LoanComponent from "./components/LoanListComponent";
+import LoanCreatorComponent from "./components/LoanCreatorComponent";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/equipment" element={<EquipmentComponent />} />
           {/* Loan section */}
           <Route path="/loans" element={<LoanComponent />} />
+          {/* Loan creation */}
+          <Route path="/loans/create" element={<LoanCreatorComponent />} />
         </Routes>
       </Router>
     </div>

@@ -39,11 +39,11 @@ public class EquipmentService {
     }
 
     // Change the availability status of equipment
-    public void changeAvailabilityStatus(Long equipmentID, Boolean equipmentAvailability) {
+    public void changeAvailabilityStatus(Long equipmentID) {
         // Find the equipment by its ID
         EquipmentEntity equipmentEntity = equipmentRepository.findEquipmentByID(equipmentID);
-        // Change the availability status
-        equipmentEntity.setEquipmentAvailability(equipmentAvailability);
+        // Change the availability status, if it is available, it will be set to unavailable and vice versa
+        equipmentEntity.setEquipmentAvailability(!equipmentEntity.getEquipmentAvailability());
         // Save the changes to the database
         equipmentRepository.save(equipmentEntity);
     }

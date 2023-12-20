@@ -24,13 +24,9 @@ class EquipmentService {
   }
 
   // Change the availability status of equipment
-  changeEquipmentAvailability(equipmentCode, availabilityStatus) {
-    return axios.put(
-      EQUIPMENT_API_URL +
-        "/change-availability/" +
-        equipmentCode +
-        "/" +
-        availabilityStatus
+  changeEquipmentAvailability(equipmentCode) {
+    return axios.get(
+      EQUIPMENT_API_URL + "/change-availability/" + equipmentCode
     );
   }
 

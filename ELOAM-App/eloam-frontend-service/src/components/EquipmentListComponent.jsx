@@ -40,7 +40,10 @@ export default function TeacherListFunComponent() {
       // If the search query is empty, reset the table to its original state
       EquipmentService.getAllEquipment()
         .then((res) => {
-          setInput((prevInput) => ({ ...prevInput, equipmentList: res.data }));
+          setInput((prevInput) => ({
+            ...prevInput,
+            equipmentList: res.data,
+          }));
         })
         .catch((error) => {
           console.log(error);
@@ -49,7 +52,7 @@ export default function TeacherListFunComponent() {
       // If there's a search query, filter the table based on the query
       const filteredEquipment = input.equipmentList.filter((equipment) => {
         // Search by ID and Brand
-        const lowerCaseID = equipment.equipmentID.toLowerCase();
+        const lowerCaseID = String(equipment.equipmentID).toLowerCase();
         const lowerCaseBrand = equipment.equipmentBrand.toLowerCase();
 
         return (
@@ -180,8 +183,7 @@ export default function TeacherListFunComponent() {
                       )}
                     </td>
                     <td>
-                      <button className="action-button">Actualizar</button>
-                      <button className="action-button">Cambiar disponibilidad</button>
+                      <button className="action-button">Ver prestamos</button>
                     </td>
                   </tr>
                 ))

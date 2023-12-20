@@ -95,4 +95,13 @@ public class LoanService {
         // Save the loan to the database
         saveLoan(loanEntity);
     }
+
+    // Create and save a loan from a loan entity
+    public void createLoan(LoanEntity loanEntity) {
+        // Set the loan date to the current date
+        loanEntity.setLoanDate(LocalDateTime.now());
+        // Save the loan to the database
+        saveLoan(loanEntity);
+    }
+
 }
